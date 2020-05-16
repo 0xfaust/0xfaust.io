@@ -15,4 +15,4 @@ COPY . /opt/services/djangoapp/src
 EXPOSE 8000
 
 # start django in container
-CMD ["python", "/opt/services/djangoapp/src/faust/manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["gunicorn", "--chdir", "faust", "--bind", ":8000", "faust.wsgi:application"]
