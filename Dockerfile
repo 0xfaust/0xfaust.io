@@ -6,7 +6,7 @@ RUN mkdir -p /opt/services/djangoapp/src
 WORKDIR /opt/services/djangoapp/src
 
 # install dependencies
-RUN pip install django
+RUN pip install django gunicorn
 
 # copy project code
 COPY . /opt/services/djangoapp/src
