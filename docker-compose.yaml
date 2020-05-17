@@ -7,6 +7,8 @@ services:
       - .:/opt/services/django/src
     env_file:
       - .env
+    networks:
+      - nginx_network
   
   nginx:
     image: nginx:1.18.0
