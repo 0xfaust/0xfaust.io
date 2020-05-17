@@ -1,5 +1,5 @@
 venv/
 .env
 *.pyc
-src/faust/__pycache__
+src/faust/__pycache__/*
 config/postgres/.env
