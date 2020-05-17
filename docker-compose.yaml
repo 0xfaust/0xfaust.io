@@ -16,3 +16,9 @@ services:
       - ./config/nginx/conf.d:/etc/nginx/conf.d
     depends_on:
       - django
+    networks:
+      - nginx_network
+
+networks:
+  nginx_network:
+    driver: bridge
