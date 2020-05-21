@@ -8,8 +8,7 @@ services:
     env_file:
       - .env
     networks:
-      - nginx_network
-      - postgres_network
+      - datadog_network
     depends_on:
       - postgres
   
@@ -20,9 +19,13 @@ services:
     depends_on:
       - django
     networks:
-      - nginx_network
+      - datadog_network
     ports:
       - 8000:80
+    labels:
+      com.datadoghq.ad.check_names: '["nginx"]'
+      com.datadoghq.ad.init_configs: '[{}]'
+      com.datadoghq.ad.instances: '[{"nginx_status_url": "http://%%host%%:81/nginx_status"}]'
 
   postgres:
     image: postgres:12.3
@@ -31,15 +34,28 @@ services:
     env_file:
       - config/postgres/.env
     networks:
-      - postgres_network
+      - datadog_network
     ports:
       - '5432:5432'
+    labels:
+      com.datadoghq.ad.check_names: '["postgres"]'
+      com.datadoghq.ad.init_configs: '[{}]'
+      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port":5432,"username":"${DATADOG_USER}","password":"${DATADOG_PASSWORD}"}]'
+    
+  datadog:
+    image: datadog/agent:7.19.2
+    env_file:
+      - config/datadog/.env
+    networks:
+      - datadog_network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
 
 networks:
-  nginx_network:
-    driver: bridge
-  postgres_network:
-    driver: bridge
+  datadog_network:
+    driver: bridge  
 
 volumes:
   postgres_volume:
