@@ -4,7 +4,9 @@ services:
   django:
     build: .
     volumes:
-      - .:/opt/services/django/src
+      - .:/opt/services/django
+      - static_volume:/opt/services/django/src/static
+      - media_volume:/opt/services/django/src/media
     env_file:
       - .env
     networks:
@@ -16,6 +18,8 @@ services:
     image: nginx:1.18.0
     volumes:
       - ./config/nginx/conf.d:/etc/nginx/conf.d
+      - static_volume:/opt/services/django/src/static
+      - media_volume:/opt/services/django/src/media
     depends_on:
       - django
     networks:
@@ -59,3 +63,5 @@ networks:
 
 volumes:
   postgres_volume:
+  static_volume:
+  media_volume:

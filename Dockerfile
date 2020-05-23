@@ -2,15 +2,15 @@
 FROM python:3.7
 
 # installation directory
-RUN mkdir -p /opt/services/django/src
-WORKDIR /opt/services/django/src
-COPY requirements.txt /opt/services/django/src
+RUN mkdir -p /opt/services/django
+WORKDIR /opt/services/django
+COPY requirements.txt /opt/services/django
 
 # install dependencies
 RUN pip install -r requirements.txt
 
 # copy project code
-COPY . /opt/services/django/src
+COPY . /opt/services/django
 
 # expose port 8000
 EXPOSE 8000
