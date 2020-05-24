@@ -1,0 +1,54 @@
+h1 {
+    text-align: center;
+}
+
+.navbar {
+  background-color: #333;
+  height: 40px;
+}
+
+.navbar .logo {
+  background-color: #333;
+  font-weight: bold;
+  float: left;
+  color: white;
+  height: 20px;
+  padding: 10px 16px;
+} 
+
+.navbar .menu {
+  float: right;    
+}
+  
+.navbar .menu li {
+  float: left;
+  margin: 0;
+
+}
+  
+.navbar .menu li a {
+  font-size: 12px;
+  background-color: #333;
+  margin: 0;
+  padding: 0;
+  display: block;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  padding: 3px 12px;
+}
+
+.navbar .menu li a:hover {
+  background-color: #111;
+  color: white;
+  margin: 0;
+}
+
+.navbar ul {
+  list-style-type: none;
+  margin: 0;
+  height: 20px;      
+  padding: 10px;
+  overflow: hidden;
+  background-color: #333;
+}
