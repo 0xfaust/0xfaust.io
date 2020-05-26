@@ -4,3 +4,4 @@ venv/
 */__pycache__/*
 config/postgres/.env
 config/datadog/.env
+*.DS_Store

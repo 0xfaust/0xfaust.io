@@ -30,6 +30,7 @@ services:
       com.datadoghq.ad.check_names: '["nginx"]'
       com.datadoghq.ad.init_configs: '[{}]'
       com.datadoghq.ad.instances: '[{"nginx_status_url": "http://%%host%%:81/nginx_status"}]'
+      com.datadoghq.ad.logs: '[{"source": "nginx", "service": "reverse proxy"}]'
 
   postgres:
     image: postgres:12.3
@@ -45,11 +46,15 @@ services:
       com.datadoghq.ad.check_names: '["postgres"]'
       com.datadoghq.ad.init_configs: '[{}]'
       com.datadoghq.ad.instances: '[{"host":"%%host%%", "port":5432,"username":"${DATADOG_USER}","password":"${DATADOG_PASSWORD}"}]'
-    
+      com.datadoghq.ad.logs: '[{"source": "postgres", "service": "database"}]'
+
   datadog:
     image: datadog/agent:7.19.2
     env_file:
       - config/datadog/.env
+    environment: 
+      - DD_LOGS_ENABLED=true
+      - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
     networks:
       - datadog_network
     volumes:
