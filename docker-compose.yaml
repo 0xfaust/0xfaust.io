@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   django:
+    container_name: 0xfaustio_django
     build: .
     volumes:
       - .:/opt/services/django
@@ -9,12 +10,18 @@ services:
       - media_volume:/opt/services/django/src/media
     env_file:
       - .env
+    environment:
+      - DD_AGENT_HOST=0xfaustio_datadog
+      - DD_TRACE_AGENT_PORT=8126
     networks:
       - datadog_network
     depends_on:
       - postgres
+    labels:
+      com.datadoghq.ad.logs: '[{"source": "django", "service": "web application"}]'
   
   nginx:
+    container_name: 0xfaustio_nginx
     image: nginx:1.18.0
     volumes:
       - ./config/nginx/conf.d:/etc/nginx/conf.d
@@ -33,6 +40,7 @@ services:
       com.datadoghq.ad.logs: '[{"source": "nginx", "service": "reverse proxy"}]'
 
   postgres:
+    container_name: 0xfaustio_postgres
     image: postgres:12.3
     volumes:
       - postgres_volume:/var/lib/postgresql/data
@@ -46,21 +54,28 @@ services:
       com.datadoghq.ad.check_names: '["postgres"]'
       com.datadoghq.ad.init_configs: '[{}]'
       com.datadoghq.ad.instances: '[{"host":"%%host%%", "port":5432,"username":"${DATADOG_USER}","password":"${DATADOG_PASSWORD}"}]'
-      com.datadoghq.ad.logs: '[{"source": "postgres", "service": "database"}]'
+      com.datadoghq.ad.logs: '[{"source": "postgresql", "service": "database"}]'
 
   datadog:
+    container_name: 0xfaustio_datadog
     image: datadog/agent:7.19.2
     env_file:
       - config/datadog/.env
     environment: 
       - DD_LOGS_ENABLED=true
       - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
+      - DD_APM_ENABLED=true
+      - DD_APM_NON_LOCAL_TRAFFIC=true
     networks:
       - datadog_network
+    ports:
+      - 8126:8126/tcp
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /proc/:/host/proc/:ro
       - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+    labels:
+      com.datadoghq.ad.logs: '[{"source": "agent", "service": "datadog agent"}]'
 
 networks:
   datadog_network:

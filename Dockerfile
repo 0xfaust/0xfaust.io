@@ -16,4 +16,4 @@ COPY . /opt/services/django
 EXPOSE 8000
 
 # start django in container
-CMD ["gunicorn", "--chdir", "src", "--bind", ":8000", "faust.wsgi:application"]
+CMD ["ddtrace-run", "gunicorn", "--chdir", "src", "--bind", ":8000", "faust.wsgi:application"]
