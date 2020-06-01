@@ -8,6 +8,7 @@ services:
       - .:/opt/services/django
       - static_volume:/opt/services/django/src/static
       - media_volume:/opt/services/django/src/media
+      - keras_volume:/opt/services/django/src/models
     env_file:
       - .env
     environment:
@@ -80,6 +81,14 @@ services:
     labels:
       com.datadoghq.ad.logs: '[{"source": "agent", "service": "datadog agent"}]'
 
+  keras:
+    container_name: 0xfaustio_keras
+    build: ./nn
+    stdin_open: true
+    tty: true
+    volumes:
+      - keras_volume:/opt/services/keras/models
+
 networks:
   datadog_network:
     driver: bridge  
@@ -88,3 +97,4 @@ volumes:
   postgres_volume:
   static_volume:
   media_volume:
+  keras_volume:
