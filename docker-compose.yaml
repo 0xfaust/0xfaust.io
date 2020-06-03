@@ -101,7 +101,7 @@ services:
     tty: true
     volumes:
       - keras_volume:/opt/services/keras/models
-      - /Users/robert.mcconnell/socket/run/datadog:/var/run/datadog:ro
+      - /var/socket/run/datadog:/var/run/datadog:ro
     networks:
       - datadog_network
     labels:
