@@ -1,0 +1,8 @@
+init_config:
+instances:
+
+logs:
+  - type: file
+    path: "/var/lib/keras/logs/training.log"
+    service: "machine learning"
+    source: keras
