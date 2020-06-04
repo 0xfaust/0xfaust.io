@@ -49,6 +49,7 @@ There are a few additional considerations and modifications that need to be made
 * [Postgress](https://www.postgresql.org/) - Database Management System
 * [GUnicorn](https://gunicorn.org/) - Web Server Gateway Interface
 * [Datadog](https://www.datadoghq.com/) - Monitoring Service
+* [Keras](https://keras.io/) - Neural Networks
 
 ## Versioning
 
