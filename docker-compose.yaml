@@ -25,9 +25,16 @@ services:
   
   nginx:
     container_name: 0xfaustio_nginx
-    image: nginx:1.18.0
+    build: ./config/nginx
+    environment:
+      - DD_AGENT_HOST=0xfaustio_datadog
+      - DD_TRACE_AGENT_PORT=8126
+      - DD_ANALYTICS_ENABLED=true
+      - DD_TRACE_ANALYTICS_ENABLED=true
     volumes:
       - ./config/nginx/conf.d:/etc/nginx/conf.d
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./config/nginx/dd-config.json:/etc/nginx/dd-config.json
       - static_volume:/opt/services/django/src/static
       - media_volume:/opt/services/django/src/media
     depends_on:
