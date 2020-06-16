@@ -45,6 +45,11 @@ services:
   postgres:
     container_name: 0xfaustio_postgres
     image: postgres:12.3
+    environment:
+      - DD_AGENT_HOST=0xfaustio_datadog
+      - DD_TRACE_AGENT_PORT=8126
+      - DD_ANALYTICS_ENABLED=true
+      - DD_TRACE_ANALYTICS_ENABLED=true
     volumes:
       - postgres_volume:/var/lib/postgresql/data
     env_file:
