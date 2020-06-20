@@ -46,7 +46,7 @@ services:
     labels:
       com.datadoghq.ad.check_names: '["nginx"]'
       com.datadoghq.ad.init_configs: '[{}]'
-      com.datadoghq.ad.instances: '[{"nginx_status_url": "http://%%host%%:81/nginx_status"}]'
+      com.datadoghq.ad.instances: '[{"nginx_status_url": "http://%%host%%:80/nginx_status"}]'
       com.datadoghq.ad.logs: '[{"source": "nginx", "service": "reverse proxy"}]'
 
   postgres:
@@ -109,6 +109,11 @@ services:
     build: ./nn
     environment:
       - TZ=Europe/Dublin
+      - DD_AGENT_HOST=0xfaustio_datadog
+      - DD_TRACE_AGENT_PORT=8126
+      - DD_ANALYTICS_ENABLED=true
+      - DD_TRACE_ANALYTICS_ENABLED=true
+      - DD_SERVICE=keras
     stdin_open: true
     tty: true
     volumes:
@@ -116,8 +121,6 @@ services:
       - /var/socket/run/datadog:/var/run/datadog:ro
     networks:
       - datadog_network
-    labels:
-      com.datadoghq.ad.logs: '[{"source": "keras", "service": "machine learning"}]'
 
 networks:
   datadog_network:

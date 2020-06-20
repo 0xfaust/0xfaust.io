@@ -1,9 +1,11 @@
 import keras
+import time
 from keras import layers
 from keras import models
 from keras.datasets import mnist
 from keras.utils import to_categorical
 from datadog import initialize, statsd
+from ddtrace import tracer
 import logging
 
 options = {
@@ -26,45 +28,54 @@ class LogsAndMetricsCallback(keras.callbacks.Callback):
         statsd.gauge('keras.loss', accuracy['loss'])
         log.info('MNIST Convolutional Neural Network Training - Epoch: {}, Accuracy: {}, Loss: {}.'.format((epoch+1), accuracy['accuracy'], accuracy['loss']))
 
-model = models.Sequential()
-model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)))
-model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Conv2D(64, (3, 3), activation='relu'))
-model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+while(True):
 
-model.add(layers.Flatten())
-model.add(layers.Dense(64, activation='relu'))
-model.add(layers.Dense(10, activation='softmax'))
+    with tracer.trace('model.add_layers'):
+        model = models.Sequential()
+        model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)))
+        model.add(layers.MaxPooling2D((2, 2)))
+        model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+        model.add(layers.MaxPooling2D((2, 2)))
+        model.add(layers.Conv2D(64, (3, 3), activation='relu'))
 
-(train_images, train_labels), (test_images, test_labels) = mnist.load_data()
+        model.add(layers.Flatten())
+        model.add(layers.Dense(64, activation='relu'))
+        model.add(layers.Dense(10, activation='softmax'))
 
-train_images = train_images.reshape((60000, 28, 28, 1))
-train_images = train_images.astype('float32') / 255
+    with tracer.trace('mnist.load_data'):
+        (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
 
-test_images = test_images.reshape((10000, 28, 28, 1))
-test_images = test_images.astype('float32') / 255
+    with tracer.trace('model.reshape_images'):
+        train_images = train_images.reshape((60000, 28, 28, 1))
+        train_images = train_images.astype('float32') / 255
 
-train_labels = to_categorical(train_labels)
-test_labels = to_categorical(test_labels)
+        test_images = test_images.reshape((10000, 28, 28, 1))
+        test_images = test_images.astype('float32') / 255
 
-model.compile(optimizer='rmsprop',
-              loss='categorical_crossentropy',
-              metrics=['accuracy'])
+    train_labels = to_categorical(train_labels)
+    test_labels = to_categorical(test_labels)
 
-epochs_train = 5
-batch_size_train = 64
+    with tracer.trace('model.compile'):
+        model.compile(optimizer='rmsprop',
+                    loss='categorical_crossentropy',
+                    metrics=['accuracy'])
 
-statsd.event('Convolutional Netual Network Model Training Starting', 'Training starting with Batch Size {} for {} Epochs.'.format(epochs_train, batch_size_train), alert_type='info')
+    epochs_train = 5
+    batch_size_train = 64
 
-model.fit(train_images, train_labels, epochs=epochs_train, batch_size=batch_size_train, callbacks=[LogsAndMetricsCallback()])
+    statsd.event('Convolutional Netual Network Model Training Starting', 'Training starting with Batch Size {} for {} Epochs.'.format(epochs_train, batch_size_train), alert_type='info')
 
-test_loss, test_acc = model.evaluate(test_images, test_labels)
+    with tracer.trace('model.fit'):
+        model.fit(train_images, train_labels, epochs=epochs_train, batch_size=batch_size_train, callbacks=[LogsAndMetricsCallback()])
 
-statsd.event('Convolutional Netual Network Model Training Finished', 'Training finished with Accuracy {} and Loss {}.'.format(test_acc, test_loss), alert_type='success')
+    with tracer.trace('model.evaluate'):
+        test_loss, test_acc = model.evaluate(test_images, test_labels)
 
-print(test_acc)
+    statsd.event('Convolutional Netual Network Model Training Finished', 'Training finished with Accuracy {} and Loss {}.'.format(test_acc, test_loss), alert_type='success')
 
-statsd.gauge('keras.epoch', 0)
-statsd.gauge('keras.accuracy', 0)
-statsd.gauge('keras.loss', 0)
+    print(test_acc)
+
+    statsd.gauge('keras.epoch', 0)
+    statsd.gauge('keras.accuracy', 0)
+    statsd.gauge('keras.loss', 0)
+    time.sleep(500)

@@ -14,3 +14,6 @@ RUN pip3 install -r requirements.txt
 
 # copy project code
 COPY . /opt/services/keras
+
+# run training loop
+CMD ["python3", "./src/covnet.py"]
