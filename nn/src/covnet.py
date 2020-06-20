@@ -66,14 +66,14 @@ while(True):
     statsd.event('Convolutional Netual Network Model Training Starting', 'Training starting with Batch Size {} for {} Epochs.'.format(epochs_train, batch_size_train), alert_type='info')
 
     with tracer.trace('model.fit'):
-        model.fit(train_images, train_labels, epochs=epochs_train, batch_size=batch_size_train, callbacks=[LogsAndMetricsCallback()])
+        model.fit(train_images, train_labels, epochs=epochs_train, batch_size=batch_size_train, callbacks=[LogsAndMetricsCallback()], verbose=0)
 
     with tracer.trace('model.evaluate'):
-        test_loss, test_acc = model.evaluate(test_images, test_labels)
+        test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=0)
 
     statsd.event('Convolutional Netual Network Model Training Finished', 'Training finished with Accuracy {} and Loss {}.'.format(test_acc, test_loss), alert_type='success')
 
-    print(test_acc)
+    #print(test_acc)
 
     statsd.gauge('keras.epoch', 0)
     statsd.gauge('keras.accuracy', 0)

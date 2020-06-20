@@ -84,6 +84,7 @@ services:
       - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
       - DD_DOGSTATSD_SOCKET=/var/run/datadog/dsd.socket
       - DD_DOGSTATSD_ORIGIN_DETECTION=true
+      - DD_CONTAINER_EXCLUDE_LOGS="name:0xfaustio_keras"
     networks:
       - datadog_network
     ports:
@@ -95,8 +96,6 @@ services:
       - /var/socket/run/datadog:/var/run/datadog
       - ./config/datadog/keras.d/conf.yaml:/etc/datadog-agent/conf.d/keras.d/conf.yaml
       - keras_volume:/var/lib/keras/
-    labels:
-      com.datadoghq.ad.logs: '[{"source": "agent", "service": "datadog agent"}]'
     pid: host
     depends_on:
       - django
@@ -119,6 +118,8 @@ services:
     volumes:
       - keras_volume:/opt/services/keras/models
       - /var/socket/run/datadog:/var/run/datadog:ro
+    labels:
+      com.datadoghq.ad.logs: '[{"source": "keras", "service": "machine learning"}]'
     networks:
       - datadog_network
 

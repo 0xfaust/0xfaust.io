@@ -23,8 +23,8 @@ Make sure you have installed all of the following prerequisites on your developm
 1. Clone this repository to get all of the files necessary for building the project  
 ```$ git clone https://github.com/0xfaust/0xfaust.io```  
 2. Make copies of the Environment Variable files  
-```$ cd 0xfaust.io && cp .env.template .env && cp config/postgres/.env.template config/postgres/.env```
-3. Configure the ```.env``` and ```config/postgres/.env``` files for your environment.
+```$ cd 0xfaust.io && cp .env.template .env && cp config/datadog/.env.template config/datadog/.env && cp config/postgres/.env.template config/postgres/.env```
+3. Configure the ```.env```, ```config/datadog.env``` and ```config/postgres/.env``` files for your environment.
 4. Build and run all of the Docker Containers in detached mode.  
 ```$ docker-compose up -d --build```   
 5. The site can then be accessed via [localhost:8000](http://localhost:8000) in your browser.
@@ -38,7 +38,7 @@ Make sure you have installed all of the following prerequisites on your developm
 
 ## Deployment
 There are a few additional considerations and modifications that need to be made in order to host the project on a live system. Some of the considerations are outlined in Django's [Deployment Checklist](https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/) and most of them have already been addressed using Environment Variables. Here are some additional steps to go from ```localhost``` to your server's IP.
-1. In ```config/nginx/conf.d/local.conf```, change ```localhost``` to the IP of your server.
+1. In ```config/nginx/nginx.conf```, change ```localhost``` to the IP of your server.
 2. In ```src/faust/settings.py``` change ```localhost``` to the list of IP address's and domains, e.g.  
 ```ALLOWED_HOSTS = ['xxx.xxx.xxx.xxx','0xfaust.io','www.0xfaust.io']```
 
