@@ -123,6 +123,12 @@ services:
     networks:
       - datadog_network
 
+  api:
+    container_name: 0xfaustio_api
+    build: ./api
+    ports:
+      - 8080:8080
+
 networks:
   datadog_network:
     driver: bridge  
