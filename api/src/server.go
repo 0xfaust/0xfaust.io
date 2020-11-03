@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"sync"
 	"time"
+	httptrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
+	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
 
 type Bookmark struct {
@@ -89,9 +91,14 @@ func newAPIHandler() *apiHandler {
 }
 
 func main() {
+	tracer.Start(tracer.WithDebugMode(true))
+	defer tracer.Stop()
+	mux := httptrace.NewServeMux()
 	apiHandler := newAPIHandler()
-	http.HandleFunc("/api", apiHandler.bookmarks)
-	err := http.ListenAndServe(":8080", nil)
+
+	mux.HandleFunc("/api", apiHandler.bookmarks)
+	
+	err := http.ListenAndServe(":8080", mux)
 	if err != nil {
 		panic(err)
 	}

@@ -9,6 +9,11 @@ WORKDIR /opt/services/api
 COPY . /opt/services/api
 
 # build api server
+RUN go get gopkg.in/DataDog/dd-trace-go.v1/ddtrace
+RUN go get github.com/DataDog/datadog-go/statsd
+RUN go get "golang.org/x/xerrors"
+RUN go get github.com/google/uuid
+RUN go get "golang.org/x/time/rate"
 RUN go build -o ./src/server ./src
 
 CMD ["./src/server"]
