@@ -126,6 +126,16 @@ services:
   api:
     container_name: 0xfaustio_api
     build: ./api
+    environment:
+      - DD_AGENT_HOST=0xfaustio_datadog
+      - DD_TRACE_AGENT_PORT=8126
+      - DD_ANALYTICS_ENABLED=true
+      - DD_TRACE_ANALYTICS_ENABLED=true
+      - DD_SERVICE=api
+    labels:
+      com.datadoghq.ad.logs: '[{"source": "go", "service": "api"}]'
+    networks:
+      - datadog_network
     ports:
       - 8080:8080
 
