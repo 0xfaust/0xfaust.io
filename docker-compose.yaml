@@ -73,7 +73,7 @@ services:
 
   datadog:
     container_name: 0xfaustio_datadog
-    image: datadog/agent:7.19.2
+    image: datadog/agent:7.23.0
     env_file:
       - config/datadog/.env
     environment: 

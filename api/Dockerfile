@@ -10,6 +10,7 @@ COPY . /opt/services/api
 
 # build api server
 RUN go get gopkg.in/DataDog/dd-trace-go.v1/ddtrace
+RUN go get gopkg.in/DataDog/dd-trace-go.v1/profiler
 RUN go get github.com/DataDog/datadog-go/statsd
 RUN go get "golang.org/x/xerrors"
 RUN go get github.com/google/uuid
